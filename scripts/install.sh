@@ -6,7 +6,7 @@ command -v python3 >/dev/null 2>&1 || { printf 'Python 3.11+ is required.\n' >&2
 VENV="$ROOT_DIR/.venv"
 [[ -d "$VENV" ]] || python3 -m venv "$VENV"
 "$VENV/bin/python" -m pip install --upgrade pip
-"$VENV/bin/python" -m pip install -e "$ROOT_DIR"
+"$VENV/bin/python" -m pip install -r "$ROOT_DIR/requirements.txt"
 [[ -f "$ROOT_DIR/.env" ]] || cp "$ROOT_DIR/.env.example" "$ROOT_DIR/.env"
 
 OS_NAME="$(uname -s)"

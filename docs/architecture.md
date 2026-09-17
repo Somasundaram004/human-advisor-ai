@@ -3,7 +3,7 @@
 ```mermaid
 flowchart TB
     human[Human user]
-    service[Installed background service<br/>starts at user login]
+    service[Installed background service<br/>starts at user login<br/>task or Startup fallback]
     window[One visible Brosir AI window<br/>opens at user login]
     client[Browser or desktop voice client]
     consent[Explicit OS and app microphone consent]

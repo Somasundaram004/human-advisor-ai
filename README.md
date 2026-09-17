@@ -50,7 +50,9 @@ chmod +x scripts/install.sh
 ./scripts/install.sh
 ```
 
-The service is then always ready at `http://127.0.0.1:8000/`. Installers open one visible Brosir AI browser window at login. The window is not repeatedly forced to the foreground, and closing it does not stop the background API. This does not silently activate the microphone. A user must grant OS microphone permission and explicitly call `/v1/voice/start`; stop listening with `/v1/voice/stop`. The Brosir wake word is processed only during that consented session.
+The service is then always ready at `http://127.0.0.1:8000/`. Installers open one visible Brosir AI browser window at login. On Windows, the installer uses a scheduled task when policy allows it and falls back to the current-user Startup folder when task registration is denied. The window is not repeatedly forced to the foreground, and closing it does not stop the background API. This does not silently activate the microphone. A user must grant OS microphone permission and explicitly call `/v1/voice/start`; stop listening with `/v1/voice/stop`. The Brosir wake word is processed only during that consented session.
+
+The installers use `requirements.txt` instead of editable package installation so they also work from Windows paths containing `$` characters.
 
 ## Voice safety
 
