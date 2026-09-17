@@ -12,6 +12,8 @@ def test_memory_advice_and_learning_are_available():
     response = client.post("/v1/advice", json={"question": "What happened?"})
     assert response.status_code == 200
     assert response.json()["requires_human_decision"] is False
+    assert response.json()["answer_source"] == "local"
+    assert "AI_API_KEY" not in response.json()["answer"]
     response = client.post("/v1/learning/feedback", json={"kind": "feedback", "summary": "Ask before changes"})
     assert response.status_code == 200
     assert client.get("/v1/learning/profile").json()["human_review_required"] is True
@@ -57,3 +59,10 @@ def test_critical_voice_request_requires_approval():
     response = client.post("/v1/voice/command", json={"text": "deploy this to production", "speaker": "human"})
     assert response.json()["critical_action"] is True
     assert response.json()["human_approval_required"] is True
+
+
+def test_local_adviser_answers_without_api_key():
+    response = client.post("/v1/advice", json={"question": "How should I investigate an outage?"})
+    assert response.status_code == 200
+    assert response.json()["answer_source"] == "local"
+    assert "timeline" in response.json()["answer"]

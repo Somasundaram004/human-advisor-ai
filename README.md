@@ -7,7 +7,7 @@ The service is intentionally not an autonomous agent. It does not claim to have 
 ## Modules
 
 - `MemoryStore`: SQLite memory for incidents, facts, user-provided feelings, and feedback.
-- `Adviser`: optional OpenAI-compatible advice provider with an offline fallback.
+- `Adviser`: independent local rule-and-memory advice engine; an OpenAI-compatible provider is optional for richer wording.
 - `HumanApprovalPolicy`: approval queue for API requests, code writes, commands, and other actions.
 - `CodeWriter`: creates a code proposal only; it never writes or executes it.
 - `APIClient`: creates an API request proposal only; it never sends it.
@@ -77,7 +77,7 @@ curl -X POST http://localhost:8000/v1/voice/command -H 'Content-Type: applicatio
 
 The first phrase beginning with `Brosir` activates a continuous conversation session. Later phrases in the same consented session do not need the wake word again. The session ends when the user chooses Stop, the client disconnects, or the service restarts. The client must send each locally transcribed phrase to `/v1/voice/command`; this backend does not secretly capture audio.
 
-Ordinary questions, conversation, memory capture, advice, and status responses receive an automatic answer during the active session. Critical actions still require approval: writing or executing code, shell/cluster commands, API calls, external messages, infrastructure changes, credential or permission changes, financial actions, or anything with irreversible side effects. The AI may prepare a proposal for those actions, but it cannot perform them independently.
+Ordinary questions, conversation, memory capture, advice, and status responses receive an automatic answer during the active session. This works without `AI_API_KEY` using local rules and stored memory; the key is optional and only improves language generation. Critical actions still require approval: writing or executing code, shell/cluster commands, API calls, external messages, infrastructure changes, credential or permission changes, financial actions, or anything with irreversible side effects. The AI may prepare a proposal for those actions, but it cannot perform them independently.
 
 ## Run with Docker
 

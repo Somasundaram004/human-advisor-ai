@@ -11,7 +11,7 @@ flowchart TB
     wake[Brosir wake word<br/>starts continuous consented session]
     conversation[Continuous conversation<br/>automatic answers]
     memory[Encrypted memory store<br/>incidents, feelings as user context, facts, feedback]
-    adviser[Adviser and learning module<br/>ordinary answers]
+    adviser[Local rule and memory adviser<br/>optional AI provider]
     proposal[Action proposal<br/>code, API, command]
     approval[Human approval queue]
     executor[Optional separately reviewed executor]
@@ -32,4 +32,4 @@ flowchart TB
     class memory,api data
 ```
 
-The API service can run continuously after installation and one visible Brosir AI window opens at user login. The voice path is opt-in and reversible. `Brosir` is recognized once after explicit consent starts a listening session; subsequent client-transcribed phrases continue in that session until Stop or disconnect. The service does not access a microphone by itself, does not claim to experience feelings, and does not execute critical proposals without a human decision.
+The API service can run continuously after installation and one visible Brosir AI window opens at user login. The local rule-and-memory adviser answers without an API key; an optional provider can improve wording but is not required. The voice path is opt-in and reversible. `Brosir` is recognized once after explicit consent starts a listening session; subsequent client-transcribed phrases continue in that session until Stop or disconnect. The service does not access a microphone by itself, does not claim to experience feelings, and does not execute critical proposals without a human decision.
