@@ -33,6 +33,25 @@ Windows PowerShell activation:
 
 Open `http://localhost:8000/docs` for the API documentation. Set a strong `HUMAN_APPROVAL_TOKEN`; do not use the example value in a shared environment.
 
+## Install once and start automatically
+
+The installers register the service to start at user login and restart if the API process exits. The API listens only on `127.0.0.1` by default:
+
+Windows PowerShell:
+
+```powershell
+.\scripts\install.ps1
+```
+
+macOS or Linux:
+
+```bash
+chmod +x scripts/install.sh
+./scripts/install.sh
+```
+
+The service is then always ready at `http://127.0.0.1:8000/docs`. This does not silently activate the microphone. A user must grant OS microphone permission and explicitly call `/v1/voice/start`; stop listening with `/v1/voice/stop`. The Brosir wake word is processed only during that consented session.
+
 ## Voice safety
 
 The service cannot and will not secretly keep your microphone on. A browser or desktop client must request OS microphone permission, show a visible listening indicator, and call the explicit start endpoint:
