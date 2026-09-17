@@ -77,7 +77,7 @@ curl -X POST http://localhost:8000/v1/voice/command -H 'Content-Type: applicatio
 
 The first phrase beginning with `Brosir` activates a continuous conversation session. Later phrases in the same consented session do not need the wake word again. The session ends when the user chooses Stop, the client disconnects, or the service restarts. The client must send each locally transcribed phrase to `/v1/voice/command`; this backend does not secretly capture audio.
 
-Ordinary conversation, memory capture, advice, and status responses can continue without an approval prompt. Critical actions still require approval: writing or executing code, shell/cluster commands, API calls, external messages, infrastructure changes, credential or permission changes, financial actions, or anything with irreversible side effects. The AI may propose those actions, but it cannot perform them independently.
+Ordinary questions, conversation, memory capture, advice, and status responses receive an automatic answer during the active session. Critical actions still require approval: writing or executing code, shell/cluster commands, API calls, external messages, infrastructure changes, credential or permission changes, financial actions, or anything with irreversible side effects. The AI may prepare a proposal for those actions, but it cannot perform them independently.
 
 ## Run with Docker
 

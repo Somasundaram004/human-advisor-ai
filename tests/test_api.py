@@ -11,7 +11,7 @@ def test_memory_advice_and_learning_are_available():
     assert response.status_code == 200
     response = client.post("/v1/advice", json={"question": "What happened?"})
     assert response.status_code == 200
-    assert response.json()["requires_human_decision"] is True
+    assert response.json()["requires_human_decision"] is False
     response = client.post("/v1/learning/feedback", json={"kind": "feedback", "summary": "Ask before changes"})
     assert response.status_code == 200
     assert client.get("/v1/learning/profile").json()["human_review_required"] is True
@@ -47,3 +47,13 @@ def test_brosir_wake_word_activates_only_after_consent():
     assert response.json()["accepted"] is True
     assert response.json()["wake_word_detected"] is False
     assert response.json()["continuous_session"] is True
+    assert response.json()["answer"]
+
+
+def test_critical_voice_request_requires_approval():
+    client.post("/v1/voice/stop")
+    client.post("/v1/voice/start", json={"consent": True})
+    client.post("/v1/voice/command", json={"text": "Brosir hello", "speaker": "human"})
+    response = client.post("/v1/voice/command", json={"text": "deploy this to production", "speaker": "human"})
+    assert response.json()["critical_action"] is True
+    assert response.json()["human_approval_required"] is True

@@ -14,9 +14,9 @@ class Adviser:
         prompt = json.dumps({"question": question, "context": context, "memories": memories})
         answer = self._llm(prompt)
         return {
-            "answer": answer or "I need human guidance before recommending an action. Review the recalled context and choose the next step.",
+            "answer": answer or "I heard your question. Add AI_API_KEY for a generated answer, or review the recalled context for the next step.",
             "memories_used": [item["id"] for item in memories],
-            "requires_human_decision": True,
+            "requires_human_decision": False,
         }
 
     def _llm(self, prompt: str) -> str:

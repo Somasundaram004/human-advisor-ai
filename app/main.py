@@ -21,6 +21,15 @@ code_writer = CodeWriter(policy)
 learning = LearningModule(store)
 app = FastAPI(title="Human Advisor AI", version="0.1.0")
 UI_PATH = os.path.join(os.path.dirname(__file__), "static", "index.html")
+CRITICAL_TERMS = (
+    "send", "delete", "deploy", "execute", "run command", "write code", "change permission",
+    "change credential", "transfer money", "publish", "email", "message", "production",
+)
+
+
+def is_critical(command: str) -> bool:
+    lowered = command.casefold()
+    return any(term in lowered for term in CRITICAL_TERMS)
 
 
 @app.get("/")
@@ -107,7 +116,21 @@ def transcribe(item: VoiceInput) -> dict:
 
 @app.post("/v1/voice/command")
 def voice_command(item: VoiceInput) -> dict:
-    return voice.process_phrase(item.text, item.speaker)
+    result = voice.process_phrase(item.text, item.speaker)
+    if not result.get("accepted"):
+        return result
+    command = result["command"]
+    if is_critical(command):
+        result.update({
+            "critical_action": True,
+            "human_approval_required": True,
+            "answer": "This request may create an external or irreversible side effect. I will prepare a proposal, but I need your approval before any action.",
+        })
+        return result
+    result["critical_action"] = False
+    result["answer"] = adviser.answer(command, {"source": "continuous_brosir_voice", "speaker": item.speaker})
+    result["human_approval_required"] = False
+    return result
 
 
 @app.post("/v1/voice/start")

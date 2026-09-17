@@ -9,9 +9,9 @@ flowchart TB
     consent[Explicit OS and app microphone consent]
     voice[Voice session boundary<br/>start, stop, visible status]
     wake[Brosir wake word<br/>starts continuous consented session]
-    conversation[Continuous conversation<br/>until Stop or disconnect]
+    conversation[Continuous conversation<br/>automatic answers]
     memory[Encrypted memory store<br/>incidents, feelings as user context, facts, feedback]
-    adviser[Adviser and learning module]
+    adviser[Adviser and learning module<br/>ordinary answers]
     proposal[Action proposal<br/>code, API, command]
     approval[Human approval queue]
     executor[Optional separately reviewed executor]
@@ -21,6 +21,7 @@ flowchart TB
     human --> client --> consent --> voice --> wake
     wake --> conversation --> memory --> adviser
     adviser --> proposal --> approval --> executor --> api
+    adviser -. ordinary answer .-> conversation
     approval -. reject or revise .-> human
 
     classDef human fill:#e8f1ff,stroke:#2457a6,color:#102a56
