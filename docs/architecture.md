@@ -6,6 +6,7 @@ flowchart TB
     client[Browser or desktop voice client]
     consent[Explicit OS and app microphone consent]
     voice[Voice session boundary<br/>start, stop, visible status]
+    wake[Brosir wake word<br/>local phrase detection]
     memory[Encrypted memory store<br/>incidents, feelings as user context, facts, feedback]
     adviser[Adviser and learning module]
     proposal[Action proposal<br/>code, API, command]
@@ -13,8 +14,8 @@ flowchart TB
     executor[Optional separately reviewed executor]
     api[External API or code workspace]
 
-    human --> client --> consent --> voice
-    voice --> memory --> adviser
+    human --> client --> consent --> voice --> wake
+    wake --> memory --> adviser
     adviser --> proposal --> approval --> executor --> api
     approval -. reject or revise .-> human
 
@@ -26,4 +27,4 @@ flowchart TB
     class memory,api data
 ```
 
-The voice path is opt-in and reversible. The service does not access a microphone by itself, does not claim to experience feelings, and does not execute proposals without a human decision.
+The voice path is opt-in and reversible. `Brosir` is recognized only after explicit consent starts a listening session. The service does not access a microphone by itself, does not claim to experience feelings, and does not execute proposals without a human decision.

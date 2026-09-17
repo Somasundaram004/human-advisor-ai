@@ -12,6 +12,7 @@ The service is intentionally not an autonomous agent. It does not claim to have 
 - `CodeWriter`: creates a code proposal only; it never writes or executes it.
 - `APIClient`: creates an API request proposal only; it never sends it.
 - `VoiceModule`: consent-controlled listening session with explicit start/stop/status; connect a reviewed speech-to-text/text-to-speech provider later.
+- Wake word: `Brosir` activates command handling only inside a consented listening session.
 - `LearningModule`: summarizes explicit human feedback into reviewable preferences; it cannot change policy automatically.
 
 ## Run locally
@@ -43,6 +44,17 @@ curl -X POST http://localhost:8000/v1/voice/stop
 ```
 
 Use push-to-talk or a user-enabled wake word in the client. Audio transcription and external voice providers require a separate adapter with consent, retention, and deletion controls. See [docs/architecture.md](docs/architecture.md) for the voice, memory, adviser, proposal, and human approval flow.
+
+## Brosir wake word
+
+After the user grants microphone permission and starts a session, send locally transcribed phrases to the command endpoint. The default wake word is case-insensitive `Brosir` and can be changed with `WAKE_WORD`:
+
+```bash
+curl -X POST http://localhost:8000/v1/voice/start -H 'Content-Type: application/json' -d '{"consent":true}'
+curl -X POST http://localhost:8000/v1/voice/command -H 'Content-Type: application/json' -d '{"text":"Brosir, remember that the deployment failed","speaker":"human"}'
+```
+
+Only phrases beginning with `Brosir` are accepted. Wake-word detection activates command handling; it does not grant permission to write code, call APIs, run commands, or make decisions. Those operations still become pending human approvals.
 
 ## Run with Docker
 

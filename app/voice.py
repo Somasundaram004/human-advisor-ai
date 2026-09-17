@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime, timezone
+import os
 
 
 @dataclass
@@ -7,6 +8,8 @@ class ListeningSession:
     active: bool = False
     consented: bool = False
     started_at: str | None = None
+    activated: bool = False
+    last_command: str | None = None
 
 
 class VoiceModule:
@@ -14,6 +17,7 @@ class VoiceModule:
 
     def __init__(self):
         self.session = ListeningSession()
+        self.wake_word = os.getenv("WAKE_WORD", "Brosir")
 
     def start(self, consent: bool) -> dict:
         if not consent:
@@ -29,6 +33,31 @@ class VoiceModule:
         self.session = ListeningSession()
         return self.status()
 
+    def process_phrase(self, text: str, speaker: str) -> dict:
+        normalized = text.strip()
+        wake_detected = normalized.casefold().startswith(self.wake_word.casefold())
+        if not self.session.active or not self.session.consented:
+            return {
+                "accepted": False,
+                "reason": "voice session is not active with consent",
+                "wake_word": self.wake_word,
+                "requires_explicit_consent": True,
+            }
+        if not wake_detected:
+            return {"accepted": False, "reason": "wake word not detected", "wake_word": self.wake_word}
+        command = normalized[len(self.wake_word):].lstrip(" ,:;.!?")
+        self.session.activated = True
+        self.session.last_command = command
+        return {
+            "accepted": True,
+            "activated": True,
+            "wake_word": self.wake_word,
+            "command": command,
+            "speaker": speaker,
+            "next_step": "route the command to advice or create a pending action for human approval",
+            "human_approval_required": True,
+        }
+
     def status(self) -> dict:
         return {
             "active": self.session.active,
@@ -36,6 +65,9 @@ class VoiceModule:
             "started_at": self.session.started_at,
             "always_on": False,
             "human_control_required": True,
+            "wake_word": self.wake_word,
+            "activated": self.session.activated,
+            "last_command": self.session.last_command,
         }
 
     def transcribe(self, text: str, speaker: str) -> dict:

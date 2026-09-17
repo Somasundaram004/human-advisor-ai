@@ -33,3 +33,13 @@ def test_voice_requires_consent_and_can_be_stopped():
     assert response.json()["active"] is True
     response = client.post("/v1/voice/stop")
     assert response.json()["active"] is False
+
+
+def test_brosir_wake_word_activates_only_after_consent():
+    client.post("/v1/voice/stop")
+    response = client.post("/v1/voice/command", json={"text": "Brosir remember this", "speaker": "human"})
+    assert response.json()["accepted"] is False
+    client.post("/v1/voice/start", json={"consent": True})
+    response = client.post("/v1/voice/command", json={"text": "Brosir remember this", "speaker": "human"})
+    assert response.json()["activated"] is True
+    assert response.json()["command"] == "remember this"

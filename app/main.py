@@ -98,6 +98,11 @@ def transcribe(item: VoiceInput) -> dict:
     return voice.transcribe(item.text, item.speaker)
 
 
+@app.post("/v1/voice/command")
+def voice_command(item: VoiceInput) -> dict:
+    return voice.process_phrase(item.text, item.speaker)
+
+
 @app.post("/v1/voice/start")
 def start_voice(item: dict) -> dict:
     return voice.start(bool(item.get("consent", False)))
