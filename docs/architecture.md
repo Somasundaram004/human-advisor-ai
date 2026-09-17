@@ -8,7 +8,8 @@ flowchart TB
     client[Browser or desktop voice client]
     consent[Explicit OS and app microphone consent]
     voice[Voice session boundary<br/>start, stop, visible status]
-    wake[Brosir wake word<br/>local phrase detection]
+    wake[Brosir wake word<br/>starts continuous consented session]
+    conversation[Continuous conversation<br/>until Stop or disconnect]
     memory[Encrypted memory store<br/>incidents, feelings as user context, facts, feedback]
     adviser[Adviser and learning module]
     proposal[Action proposal<br/>code, API, command]
@@ -18,7 +19,7 @@ flowchart TB
 
     service --> window --> human
     human --> client --> consent --> voice --> wake
-    wake --> memory --> adviser
+    wake --> conversation --> memory --> adviser
     adviser --> proposal --> approval --> executor --> api
     approval -. reject or revise .-> human
 
@@ -30,4 +31,4 @@ flowchart TB
     class memory,api data
 ```
 
-The API service can run continuously after installation and one visible Brosir AI window opens at user login. The voice path is opt-in and reversible. `Brosir` is recognized only after explicit consent starts a listening session. The service does not access a microphone by itself, does not claim to experience feelings, and does not execute proposals without a human decision.
+The API service can run continuously after installation and one visible Brosir AI window opens at user login. The voice path is opt-in and reversible. `Brosir` is recognized once after explicit consent starts a listening session; subsequent client-transcribed phrases continue in that session until Stop or disconnect. The service does not access a microphone by itself, does not claim to experience feelings, and does not execute critical proposals without a human decision.

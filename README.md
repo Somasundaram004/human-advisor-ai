@@ -75,7 +75,9 @@ curl -X POST http://localhost:8000/v1/voice/start -H 'Content-Type: application/
 curl -X POST http://localhost:8000/v1/voice/command -H 'Content-Type: application/json' -d '{"text":"Brosir, remember that the deployment failed","speaker":"human"}'
 ```
 
-Only phrases beginning with `Brosir` are accepted. Wake-word detection activates command handling; it does not grant permission to write code, call APIs, run commands, or make decisions. Those operations still become pending human approvals.
+The first phrase beginning with `Brosir` activates a continuous conversation session. Later phrases in the same consented session do not need the wake word again. The session ends when the user chooses Stop, the client disconnects, or the service restarts. The client must send each locally transcribed phrase to `/v1/voice/command`; this backend does not secretly capture audio.
+
+Ordinary conversation, memory capture, advice, and status responses can continue without an approval prompt. Critical actions still require approval: writing or executing code, shell/cluster commands, API calls, external messages, infrastructure changes, credential or permission changes, financial actions, or anything with irreversible side effects. The AI may propose those actions, but it cannot perform them independently.
 
 ## Run with Docker
 

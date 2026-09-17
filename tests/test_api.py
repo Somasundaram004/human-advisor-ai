@@ -43,3 +43,7 @@ def test_brosir_wake_word_activates_only_after_consent():
     response = client.post("/v1/voice/command", json={"text": "Brosir remember this", "speaker": "human"})
     assert response.json()["activated"] is True
     assert response.json()["command"] == "remember this"
+    response = client.post("/v1/voice/command", json={"text": "Now remember the next detail", "speaker": "human"})
+    assert response.json()["accepted"] is True
+    assert response.json()["wake_word_detected"] is False
+    assert response.json()["continuous_session"] is True

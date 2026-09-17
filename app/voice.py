@@ -43,19 +43,21 @@ class VoiceModule:
                 "wake_word": self.wake_word,
                 "requires_explicit_consent": True,
             }
-        if not wake_detected:
+        if not wake_detected and not self.session.activated:
             return {"accepted": False, "reason": "wake word not detected", "wake_word": self.wake_word}
-        command = normalized[len(self.wake_word):].lstrip(" ,:;.!?")
+        command = normalized[len(self.wake_word):].lstrip(" ,:;.!?") if wake_detected else normalized
         self.session.activated = True
         self.session.last_command = command
         return {
             "accepted": True,
             "activated": True,
+            "wake_word_detected": wake_detected,
+            "continuous_session": True,
             "wake_word": self.wake_word,
             "command": command,
             "speaker": speaker,
-            "next_step": "route the command to advice or create a pending action for human approval",
-            "human_approval_required": True,
+            "next_step": "route ordinary conversation directly; create a pending approval for critical actions",
+            "human_approval_required": False,
         }
 
     def status(self) -> dict:
