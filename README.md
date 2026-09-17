@@ -14,6 +14,7 @@ The service is intentionally not an autonomous agent. It does not claim to have 
 - `VoiceModule`: consent-controlled listening session with explicit start/stop/status; connect a reviewed speech-to-text/text-to-speech provider later.
 - Wake word: `Brosir` activates command handling only inside a consented listening session.
 - `LearningModule`: summarizes explicit human feedback into reviewable preferences; it cannot change policy automatically.
+- `DiscussionModule`: answers general questions and offers follow-up questions for a human-led discussion.
 
 ## Run locally
 
@@ -100,6 +101,12 @@ Ask for advice:
 
 ```bash
 curl -X POST http://localhost:8000/v1/advice -H 'Content-Type: application/json' -d '{"question":"How should I investigate the certificate incident?"}'
+```
+
+Start a general discussion. The response includes a local answer, related memories, and follow-up questions so the human can correct, deepen, or redirect the conversation:
+
+```bash
+curl -X POST http://localhost:8000/v1/discussion -H 'Content-Type: application/json' -d '{"question":"How should we plan a safe production release?","context":{"team":"platform"}}'
 ```
 
 Request an API action. This returns a pending approval and sends nothing:

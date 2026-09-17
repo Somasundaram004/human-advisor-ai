@@ -12,6 +12,7 @@ flowchart TB
     conversation[Continuous conversation<br/>automatic answers]
     memory[Encrypted memory store<br/>incidents, feelings as user context, facts, feedback]
     adviser[Local rule and memory adviser<br/>optional AI provider]
+    discussion[General discussion module<br/>answer plus follow-up questions]
     proposal[Action proposal<br/>code, API, command]
     approval[Human approval queue]
     executor[Optional separately reviewed executor]
@@ -20,6 +21,7 @@ flowchart TB
     service --> window --> human
     human --> client --> consent --> voice --> wake
     wake --> conversation --> memory --> adviser
+    conversation --> discussion --> human
     adviser --> proposal --> approval --> executor --> api
     adviser -. ordinary answer .-> conversation
     approval -. reject or revise .-> human

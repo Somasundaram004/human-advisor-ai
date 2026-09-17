@@ -66,3 +66,13 @@ def test_local_adviser_answers_without_api_key():
     assert response.status_code == 200
     assert response.json()["answer_source"] == "local"
     assert "timeline" in response.json()["answer"]
+
+
+def test_general_discussion_returns_answer_and_follow_ups():
+    response = client.post("/v1/discussion", json={"question": "How should we plan a safe production release?"})
+    assert response.status_code == 200
+    body = response.json()
+    assert body["answer"]
+    assert body["answer_source"] == "local"
+    assert len(body["follow_up_questions"]) == 3
+    assert body["decision_made_for_human"] is False

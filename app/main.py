@@ -6,6 +6,7 @@ from fastapi.responses import FileResponse
 from .adviser import Adviser
 from .api_client import APIClient
 from .code_writer import CodeWriter
+from .discussion import DiscussionModule
 from .models import ActionRequest, AdviceInput, ApprovalInput, MemoryInput, VoiceInput
 from .learning import LearningModule
 from .policy import HumanApprovalPolicy
@@ -19,6 +20,7 @@ voice = VoiceModule()
 api_client = APIClient(policy)
 code_writer = CodeWriter(policy)
 learning = LearningModule(store)
+discussion = DiscussionModule(adviser)
 app = FastAPI(title="Human Advisor AI", version="0.1.0")
 UI_PATH = os.path.join(os.path.dirname(__file__), "static", "index.html")
 CRITICAL_TERMS = (
@@ -61,6 +63,11 @@ def recall(query: str = "", limit: int = 20) -> list[dict]:
 @app.post("/v1/advice")
 def advise(item: AdviceInput) -> dict:
     return adviser.answer(item.question, item.context)
+
+
+@app.post("/v1/discussion")
+def discuss(item: AdviceInput) -> dict:
+    return discussion.discuss(item.question, item.context)
 
 
 @app.post("/v1/learning/feedback")
