@@ -11,7 +11,7 @@ The service is intentionally not an autonomous agent. It does not claim to have 
 - `HumanApprovalPolicy`: approval queue for API requests, code writes, commands, and other actions.
 - `CodeWriter`: creates a code proposal only; it never writes or executes it.
 - `APIClient`: creates an API request proposal only; it never sends it.
-- `VoiceModule`: provider-neutral text fallback; connect a reviewed speech-to-text/text-to-speech provider later.
+- `VoiceModule`: consent-controlled listening session with explicit start/stop/status; connect a reviewed speech-to-text/text-to-speech provider later.
 - `LearningModule`: summarizes explicit human feedback into reviewable preferences; it cannot change policy automatically.
 
 ## Run locally
@@ -31,6 +31,18 @@ Windows PowerShell activation:
 ```
 
 Open `http://localhost:8000/docs` for the API documentation. Set a strong `HUMAN_APPROVAL_TOKEN`; do not use the example value in a shared environment.
+
+## Voice safety
+
+The service cannot and will not secretly keep your microphone on. A browser or desktop client must request OS microphone permission, show a visible listening indicator, and call the explicit start endpoint:
+
+```bash
+curl -X POST http://localhost:8000/v1/voice/start -H 'Content-Type: application/json' -d '{"consent":true}'
+curl http://localhost:8000/v1/voice/status
+curl -X POST http://localhost:8000/v1/voice/stop
+```
+
+Use push-to-talk or a user-enabled wake word in the client. Audio transcription and external voice providers require a separate adapter with consent, retention, and deletion controls. See [docs/architecture.md](docs/architecture.md) for the voice, memory, adviser, proposal, and human approval flow.
 
 ## Run with Docker
 

@@ -24,3 +24,12 @@ def test_actions_are_pending_and_not_executed():
     response = client.post("/v1/code/draft", json={"action": "write_code", "reason": "Need review", "payload": {"filename": "x.py", "content": "print(1)"}})
     assert response.status_code == 200
     assert response.json()["written"] is False
+
+
+def test_voice_requires_consent_and_can_be_stopped():
+    response = client.post("/v1/voice/start", json={"consent": False})
+    assert response.json()["requires_explicit_consent"] is True
+    response = client.post("/v1/voice/start", json={"consent": True})
+    assert response.json()["active"] is True
+    response = client.post("/v1/voice/stop")
+    assert response.json()["active"] is False
