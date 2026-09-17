@@ -26,6 +26,7 @@ if [[ "$OS_NAME" == Darwin ]]; then
 EOF
   launchctl bootout "gui/$(id -u)/com.humanadvisor.ai" 2>/dev/null || true
   launchctl bootstrap "gui/$(id -u)" "$LAUNCH_DIR/com.humanadvisor.ai.plist"
+  (sleep 3; open -na "Google Chrome" --args --new-window http://127.0.0.1:8000/) >/dev/null 2>&1 &
 elif [[ "$OS_NAME" == Linux ]] && command -v systemctl >/dev/null 2>&1; then
   SERVICE_DIR="$HOME/.config/systemd/user"
   mkdir -p "$SERVICE_DIR"
@@ -44,6 +45,15 @@ WantedBy=default.target
 EOF
   systemctl --user daemon-reload
   systemctl --user enable --now human-advisor-ai.service
+  mkdir -p "$HOME/.config/autostart"
+  cat >"$HOME/.config/autostart/human-advisor-ai.desktop" <<EOF
+[Desktop Entry]
+Type=Application
+Name=Brosir AI
+Exec=xdg-open http://127.0.0.1:8000/
+X-GNOME-Autostart-enabled=true
+EOF
+  (sleep 3; xdg-open http://127.0.0.1:8000/) >/dev/null 2>&1 &
 else
   printf 'Installed dependencies. Start manually with: %s\n' "$VENV/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000"
 fi

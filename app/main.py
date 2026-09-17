@@ -1,6 +1,7 @@
 import os
 
 from fastapi import FastAPI, Header, HTTPException
+from fastapi.responses import FileResponse
 
 from .adviser import Adviser
 from .api_client import APIClient
@@ -19,6 +20,12 @@ api_client = APIClient(policy)
 code_writer = CodeWriter(policy)
 learning = LearningModule(store)
 app = FastAPI(title="Human Advisor AI", version="0.1.0")
+UI_PATH = os.path.join(os.path.dirname(__file__), "static", "index.html")
+
+
+@app.get("/")
+def ui() -> FileResponse:
+    return FileResponse(UI_PATH)
 
 
 def require_human_token(token: str | None) -> None:

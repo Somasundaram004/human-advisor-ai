@@ -20,5 +20,13 @@ $Trigger = New-ScheduledTaskTrigger -AtLogOn
 $Principal = New-ScheduledTaskPrincipal -UserId $env:USERNAME -LogonType Interactive -RunLevel Limited
 Register-ScheduledTask -TaskName $TaskName -Action $Action -Trigger $Trigger -Principal $Principal -Force | Out-Null
 Start-ScheduledTask -TaskName $TaskName
+$BrowserTask = 'HumanAdvisorAI-Window'
+$Browser = (Get-Command msedge -ErrorAction SilentlyContinue).Source
+if (-not $Browser) { $Browser = (Get-Command chrome -ErrorAction SilentlyContinue).Source }
+if ($Browser) {
+	$BrowserAction = New-ScheduledTaskAction -Execute $Browser -Argument '--new-window http://127.0.0.1:8000/'
+	Register-ScheduledTask -TaskName $BrowserTask -Action $BrowserAction -Trigger $Trigger -Principal $Principal -Force | Out-Null
+	Start-ScheduledTask -TaskName $BrowserTask
+}
 Write-Output 'Human Advisor AI installed and started at login on http://127.0.0.1:8000/docs'
 Write-Output 'Microphone access remains opt-in and must be started by the user.'
