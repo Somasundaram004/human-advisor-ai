@@ -14,6 +14,7 @@ def test_memory_advice_and_learning_are_available():
     assert response.json()["requires_human_decision"] is False
     assert response.json()["answer_source"] == "local"
     assert "AI_API_KEY" not in response.json()["answer"]
+    assert response.json()["knowledge_used"]
     response = client.post("/v1/learning/feedback", json={"kind": "feedback", "summary": "Ask before changes"})
     assert response.status_code == 200
     assert client.get("/v1/learning/profile").json()["human_review_required"] is True
@@ -76,3 +77,10 @@ def test_general_discussion_returns_answer_and_follow_ups():
     assert body["answer_source"] == "local"
     assert len(body["follow_up_questions"]) == 3
     assert body["decision_made_for_human"] is False
+
+
+def test_local_dataset_answers_kubernetes_question():
+    response = client.post("/v1/advice", json={"question": "How do I do a zero downtime Kubernetes upgrade?"})
+    assert response.status_code == 200
+    assert "replicas" in response.json()["answer"]
+    assert "safe-kubernetes-deploy" in response.json()["knowledge_used"]

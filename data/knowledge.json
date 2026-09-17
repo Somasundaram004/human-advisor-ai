@@ -1,0 +1,37 @@
+[
+  {
+    "id": "incident-first-response",
+    "topic": "incident response",
+    "questions": ["incident", "outage", "failure", "error", "production broken"],
+    "answer": "Preserve evidence first: record the timeline, exact error, recent changes, affected scope, and last known good state. Stabilize safely, communicate impact, and make only reversible changes until the cause is understood.",
+    "follow_up": ["What changed immediately before the incident?", "What users or systems are affected?"]
+  },
+  {
+    "id": "safe-kubernetes-deploy",
+    "topic": "kubernetes deployment",
+    "questions": ["kubernetes deploy", "rolling update", "upgrade cluster", "zero downtime", "pod disruption"],
+    "answer": "Use multiple replicas, readiness probes, a PodDisruptionBudget, maxUnavailable zero where capacity allows, staged rollout, health checks, and a tested rollback. Upgrade one node at a time and never drain the only healthy capacity.",
+    "follow_up": ["How many ready replicas exist now?", "What is the rollback command?", "Is the PodDisruptionBudget satisfiable?"]
+  },
+  {
+    "id": "aws-network-security",
+    "topic": "aws network security",
+    "questions": ["aws security group", "nacl", "network flow", "database access", "private subnet"],
+    "answer": "Use security groups as the primary stateful workload boundary and NACLs as a stateless subnet boundary. Keep databases private, allow database ports only from the application tier, and verify return traffic, DNS, NAT, and VPC endpoint paths.",
+    "follow_up": ["Which CIDRs are actually trusted?", "Have both NACL return paths been tested?", "Are flow logs reaching the security account?"]
+  },
+  {
+    "id": "human-approval",
+    "topic": "human approval",
+    "questions": ["should ai act", "approval", "critical action", "send api", "run command"],
+    "answer": "The AI may explain, draft, and propose. Human approval is required before code execution, shell or cluster commands, API calls, external messages, infrastructure changes, permission changes, financial actions, or irreversible side effects.",
+    "follow_up": ["What exact action is being proposed?", "What is the reversible rollback?", "Who is the approving human?"]
+  },
+  {
+    "id": "memory-retention",
+    "topic": "memory and privacy",
+    "questions": ["remember this", "memory privacy", "feelings", "delete memory", "personal data"],
+    "answer": "Store only information the human intentionally provides, label sensitivity, apply retention and deletion rules, and treat feelings as user-provided context rather than diagnosis or inferred identity. Explain what was stored and why.",
+    "follow_up": ["Should this be remembered or treated as temporary context?", "What sensitivity level applies?", "When should it be deleted?"]
+  }
+]

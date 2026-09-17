@@ -15,6 +15,7 @@ The service is intentionally not an autonomous agent. It does not claim to have 
 - Wake word: `Brosir` activates command handling only inside a consented listening session.
 - `LearningModule`: summarizes explicit human feedback into reviewable preferences; it cannot change policy automatically.
 - `DiscussionModule`: answers general questions and offers follow-up questions for a human-led discussion.
+- `LocalKnowledgeBase`: retrieves answers from the versioned `data/knowledge.json` dataset without network access or an API key.
 
 ## Run locally
 
@@ -54,6 +55,10 @@ chmod +x scripts/install.sh
 The service is then always ready at `http://127.0.0.1:8000/`. Installers open one visible Brosir AI browser window at login. On Windows, the installer uses a scheduled task when policy allows it and falls back to the current-user Startup folder when task registration is denied. The window is not repeatedly forced to the foreground, and closing it does not stop the background API. This does not silently activate the microphone. A user must grant OS microphone permission and explicitly call `/v1/voice/start`; stop listening with `/v1/voice/stop`. The Brosir wake word is processed only during that consented session.
 
 The installers use `requirements.txt` instead of editable package installation so they also work from Windows paths containing `$` characters.
+
+## Local answer dataset
+
+The adviser ships with a reviewable local dataset at [data/knowledge.json](data/knowledge.json). It covers incident response, Kubernetes rollout safety, AWS network security, human approval, and memory privacy. Matching entries are retrieved locally and returned in `knowledge_used`; set `KNOWLEDGE_PATH` to load a reviewed replacement dataset. No API key or network connection is required for these answers.
 
 ## Voice safety
 

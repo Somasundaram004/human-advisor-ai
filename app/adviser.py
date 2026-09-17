@@ -3,26 +3,32 @@ import urllib.request
 import json
 
 from .store import MemoryStore
+from .knowledge import LocalKnowledgeBase
 
 
 class Adviser:
-    def __init__(self, store: MemoryStore):
+    def __init__(self, store: MemoryStore, knowledge: LocalKnowledgeBase | None = None):
         self.store = store
+        self.knowledge = knowledge or LocalKnowledgeBase(os.getenv("KNOWLEDGE_PATH", "data/knowledge.json"))
 
     def answer(self, question: str, context: dict) -> dict:
         memories = self.store.recall(question, limit=8)
-        prompt = json.dumps({"question": question, "context": context, "memories": memories})
+        knowledge_hits = self.knowledge.search(question)
+        prompt = json.dumps({"question": question, "context": context, "memories": memories, "knowledge": knowledge_hits})
         answer = self._llm(prompt)
         source = "llm" if answer else "local"
         return {
-            "answer": answer or self._local_answer(question, memories),
+            "answer": answer or self._local_answer(question, memories, knowledge_hits),
             "answer_source": source,
             "memories_used": [item["id"] for item in memories],
+            "knowledge_used": [item["id"] for item in knowledge_hits],
             "requires_human_decision": False,
         }
 
     @staticmethod
-    def _local_answer(question: str, memories: list[dict]) -> str:
+    def _local_answer(question: str, memories: list[dict], knowledge_hits: list[dict]) -> str:
+        if knowledge_hits:
+            return knowledge_hits[0]["answer"]
         lowered = question.casefold()
         remembered = "; ".join(item["summary"] for item in memories[:3])
         if any(word in lowered for word in ("incident", "failed", "error", "outage", "broken")):

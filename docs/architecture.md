@@ -11,6 +11,7 @@ flowchart TB
     wake[Brosir wake word<br/>starts continuous consented session]
     conversation[Continuous conversation<br/>automatic answers]
     memory[Encrypted memory store<br/>incidents, feelings as user context, facts, feedback]
+    dataset[Versioned local knowledge dataset<br/>data/knowledge.json]
     adviser[Local rule and memory adviser<br/>optional AI provider]
     discussion[General discussion module<br/>answer plus follow-up questions]
     proposal[Action proposal<br/>code, API, command]
@@ -21,6 +22,7 @@ flowchart TB
     service --> window --> human
     human --> client --> consent --> voice --> wake
     wake --> conversation --> memory --> adviser
+    dataset --> adviser
     conversation --> discussion --> human
     adviser --> proposal --> approval --> executor --> api
     adviser -. ordinary answer .-> conversation
